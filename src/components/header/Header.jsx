@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "./header.scss";
-import logo from "../../assets/mklogo.png";
+import logo from "assets/mklogo.png";
 import { Link, useLocation } from "react-router-dom";
 
 const headerNav = [

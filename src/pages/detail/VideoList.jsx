@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useParams } from 'react-router';
 
-import tmdbApi from '../../api/tmdbApi';
+import tmdbApi from 'api/tmdbApi';
+import Video from './Video';
 
-const VideoList = props => {
+const VideoList = ({id}) => {
 
     const {category} = useParams();
 
@@ -12,11 +13,11 @@ const VideoList = props => {
 
     useEffect(() => {
         const getVideos = async () => {
-            const res = await tmdbApi.getVideos(category, props.id);
+            const res = await tmdbApi.getVideos(category, id);
             setVideos(res.results.slice(0, 5));
         }
         getVideos();
-    }, [category, props.id]);
+    }, [category, id]);
 
     return (
         <>
@@ -29,30 +30,5 @@ const VideoList = props => {
     );
 }
 
-const Video = props => {
-
-    const item = props.item;
-
-    const iframeRef = useRef(null);
-
-    useEffect(() => {
-        const height = iframeRef.current.offsetWidth * 9 / 16 + 'px';
-        iframeRef.current.setAttribute('height', height);
-    }, []);
-
-    return (
-        <div className="video">
-            <div className="video__title">
-                <h2>{item.name}</h2>
-            </div>
-            <iframe
-                src={`https://www.youtube.com/embed/${item.key}`}
-                ref={iframeRef}
-                width="100%"
-                title="video"
-            ></iframe>
-        </div>
-    )
-}
 
 export default VideoList;

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import { useParams } from 'react-router';
 
-import tmdbApi from '../../api/tmdbApi';
-import apiConfig from '../../api/apiConfig';
+import tmdbApi from 'api/tmdbApi';
+import apiConfig from 'api/apiConfig';
 
-const CastList = props => {
+const CastList = ({id}) => {
 
     const {category} = useParams();
 
@@ -13,11 +13,11 @@ const CastList = props => {
 
     useEffect(() => {
         const getCredits = async () => {
-            const res = await tmdbApi.credits(category, props.id);
+            const res = await tmdbApi.credits(category, id);
             setCasts(res.cast.slice(0, 5));
         }
         getCredits();
-    }, [category, props.id]);
+    }, [category, id]);
     return (
         <div className="casts">
             {

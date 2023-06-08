@@ -2,7 +2,7 @@ import React from "react";
 
 import HeroSlide from "components/hero-slide/HeroSlide";
 import { Link } from "react-router-dom";
-import { OutlineButton } from "components/button/Button";
+import { OutlineButton } from 'components/button/OutlineButton';
 import MovieList from "components/movie-list/MovieList";
 import { category, movieType, tvType } from "api/tmdbApi";
 

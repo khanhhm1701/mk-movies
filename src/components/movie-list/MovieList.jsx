@@ -4,16 +4,12 @@ import PropTypes from 'prop-types';
 import './movie-list.scss';
 
 import { SwiperSlide, Swiper } from 'swiper/react';
-import { Link } from 'react-router-dom';
 
-import Button from '../button/Button';
-
-import tmdbApi, { category } from '../../api/tmdbApi';
-import apiConfig from '../../api/apiConfig';
+import tmdbApi, { category as cate } from '../../api/tmdbApi';
 
 import MovieCard from 'components/movie-card/MovieCard';
 
-const MovieList = props => {
+const MovieList = ({type, category, id}) => {
 
     const [items, setItems] = useState([]);
 
@@ -22,16 +18,16 @@ const MovieList = props => {
             let response = null;
             const params = {};
 
-            if (props.type !== 'similar') {
-                switch(props.category) {
-                    case category.movie:
-                        response = await tmdbApi.getMoviesList(props.type, {params});
+            if (type !== 'similar') {
+                switch(category) {
+                    case cate.movie:
+                        response = await tmdbApi.getMoviesList(type, {params});
                         break;
                     default:
-                        response = await tmdbApi.getTvList(props.type, {params});
+                        response = await tmdbApi.getTvList(type, {params});
                 }
             } else {
-                response = await tmdbApi.similar(props.category, props.id);
+                response = await tmdbApi.similar(category, id);
             }
             setItems(response.results);
         }
@@ -48,7 +44,7 @@ const MovieList = props => {
                 {
                     items.map((item, i) => (
                         <SwiperSlide key={i}>
-                            <MovieCard item={item} category={props.category}/>
+                            <MovieCard item={item} category={category}/>
                         </SwiperSlide>
                     ))
                 }

@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 import './movie-grid.scss';
 
 import MovieCard from 'components/movie-card/MovieCard';
-import Button from 'components/button/Button';
+
 import { OutlineButton } from 'components/button/OutlineButton';
-import Input from 'components/input/Input'
 
-import tmdbApi, { category, movieType, tvType } from 'api/tmdbApi';
 
-const MovieGrid = props => {
+import tmdbApi, { category as cate, movieType, tvType } from 'api/tmdbApi';
+import MovieSearch from 'components/movie-search/MovieSearch';
+
+const MovieGrid = ({category}) => {
 
     const [items, setItems] = useState([]);
 
@@ -24,8 +25,8 @@ const MovieGrid = props => {
             let response = null;
             if (keyword === undefined) {
                 const params = {};
-                switch(props.category) {
-                    case category.movie:
+                switch(category) {
+                    case cate.movie:
                         response = await tmdbApi.getMoviesList(movieType.upcoming, {params});
                         break;
                     default:
@@ -35,13 +36,13 @@ const MovieGrid = props => {
                 const params = {
                     query: keyword
                 }
-                response = await tmdbApi.search(props.category, {params});
+                response = await tmdbApi.search(category, {params});
             }
             setItems(response.results);
             setTotalPage(response.total_pages);
         }
         getList();
-    }, [props.category, keyword]);
+    }, [category, keyword]);
 
     const loadMore = async () => {
         let response = null;
@@ -49,8 +50,8 @@ const MovieGrid = props => {
             const params = {
                 page: page + 1
             };
-            switch(props.category) {
-                case category.movie:
+            switch(category) {
+                case cate.movie:
                     response = await tmdbApi.getMoviesList(movieType.upcoming, {params});
                     break;
                 default:
@@ -61,7 +62,7 @@ const MovieGrid = props => {
                 page: page + 1,
                 query: keyword
             }
-            response = await tmdbApi.search(props.category, {params});
+            response = await tmdbApi.search(category, {params});
         }
         setItems([...items, ...response.results]);
         setPage(page + 1);
@@ -70,11 +71,11 @@ const MovieGrid = props => {
     return (
         <>
             <div className="section mb-3">
-                <MovieSearch category={props.category} keyword={keyword}/>
+                <MovieSearch category={category} keyword={keyword}/>
             </div>
             <div className="movie-grid">
                 {
-                    items.map((item, i) => <MovieCard category={props.category} item={item} key={i}/>)
+                    items.map((item, i) => <MovieCard category={category} item={item} key={i}/>)
                 }
             </div>
             {
@@ -86,47 +87,6 @@ const MovieGrid = props => {
             }
         </>
     );
-}
-
-const MovieSearch = props => {
-
-    const navigate = useNavigate();
-
-    const [keyword, setKeyword] = useState(props.keyword ? props.keyword : '');
-
-    const goToSearch = useCallback(
-        () => {
-            if (keyword.trim().length > 0) {
-                navigate(`/${category[props.category]}/search/${keyword}`);
-            }
-        },
-        [keyword, props.category, navigate]
-    );
-
-    useEffect(() => {
-        const enterEvent = (e) => {
-            e.preventDefault();
-            if (e.keyCode === 13) {
-                goToSearch();
-            }
-        }
-        document.addEventListener('keyup', enterEvent);
-        return () => {
-            document.removeEventListener('keyup', enterEvent);
-        };
-    }, [keyword, goToSearch]);
-
-    return (
-        <div className="movie-search">
-            <Input
-                type="text"
-                placeholder="Enter keyword"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-            />
-            <Button className="small" onClick={goToSearch}>Search</Button>
-        </div>
-    )
 }
 
 export default MovieGrid;

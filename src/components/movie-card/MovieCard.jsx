@@ -6,14 +6,12 @@ import { Link } from 'react-router-dom';
 
 import Button from 'components/button/Button';
 
-import { category } from 'api/tmdbApi';
+import { category as cate } from 'api/tmdbApi';
 import apiConfig from 'api/apiConfig';
 
-const MovieCard = props => {
+const MovieCard = ({category, item}) => {
 
-    const item  = props.item;
-
-    const link = '/' + category[props.category] + '/' + item.id;
+    const link = '/' + cate[category] + '/' + item.id;
 
     const bg = apiConfig.w500Image(item.poster_path || item.backdrop_path);
 
